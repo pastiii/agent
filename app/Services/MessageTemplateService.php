@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Services;
+
+/**
+ * Created by PhpStorm.
+ * User: zxq
+ * Date: 2018/7/13
+ * Time: 17:36
+ */
+class MessageTemplateService
+{
+    /**
+     * 邮件文案
+     * @return array
+     */
+    public function emailCopyWriting()
+    {
+        $time = env("SEND_EMAIL_TIME",10);
+        $data['code'] = str_pad(random_int(1, 999999), 6, 0, STR_PAD_LEFT);
+        $data['subject']  = "EmailCode";
+        $data['name']     = "HangZhou";
+        $data['content'] = "<table cellpadding='0' cellspacing='0'style='border: 1px solid #cdcdcd; width: 640px; margin:auto;font-size: 12px; color: #1E2731; line-height: 20px;'>
+                <tr>
+                    <td colspan='3' align='center' style='background-color:#454c6d; height: 55px; padding: 30px 0'><a
+                        href='https://www.kf.com' target='_blank'></a></td>
+                </tr>
+                <tr style='height: 30px;'>&nbsp;</tr>
+            
+                <tr>
+                    <td width='20'></td>
+                    <td style='line-height: 40px'>
+                        Hello,<br>
+            
+                        Welcome to KF!<br>
+            
+                        You have recently received instructions to enter a one-time authentication code to create your KF
+                        account.<br>
+            
+                        Your code is: <b>" . $data['code'] . "</b>
+            
+                        For security reasons, this code will expire in " . $time . " minutes.<br>
+                    </td>
+                    <td width='20'></td>
+                </tr>
+                <tr style='height: 20px;'>&nbsp;</tr>
+                <tr>
+                    <td width='20'></td>
+                    <td>
+                        Sincerely,<br>
+                        The KF Team<br>
+                        <a href='https://www.kf.com'>https://www.kf.com</a><br>
+                    </td>
+                    <td width='20'></td>
+                </tr>
+                <tr style='height: 50px;'>&nbsp;</tr>
+            </table>";
+        return $data;
+    }
+
+    /**
+     * 登录,注册验证码文案
+     * @param $type
+     * @return mixed
+     */
+    public function phoneCodeCopyWriting($type)
+    {
+        $verification_code = str_pad(random_int(1, 999999), 6, 0, STR_PAD_LEFT);
+        $data['code']      = $verification_code;
+        $data['hour'] = $type == "+86" ? env("SEND_PHONE_TIME",10) . "分钟" : env("SEND_PHONE_TIME",10) . " min";
+        $data['type']      = $type == "+86" ? 3 : 1;
+        return $data;
+    }
+
+    /**
+     * 登录异地提示文案
+     * @param $type
+     * @param $user_name
+     * @return mixed
+     */
+    public function phoneLoginCopyWriting($type, $user_name)
+    {
+        $data['name'] = mb_substr($user_name, 0, 2) . "***";
+        $data['time'] = date("H:i", time());
+        $data['type'] = $type == "+86" ? 4 : 2;
+        return $data;
+    }
+}
